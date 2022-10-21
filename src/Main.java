@@ -1,10 +1,13 @@
+import java.io.File;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Basket basket = new Basket(new int[]{59, 150, 243, 30, 580},
+        File basketTxt = new File("Basket.txt");
+        Basket basket = (basketTxt.exists()) ? Basket.loadFromTxtFile(basketTxt) : new Basket(new int[]{59, 150, 243, 30, 580},
                 new String[]{"Хлеб", "Масло", "Чай", "Вода", "Колбаса"});
+
         System.out.println("Список товаров доступных для добавления в корзину:");
         StringBuilder listFood = new StringBuilder();
         String[] food = basket.getFood();
@@ -29,7 +32,7 @@ public class Main {
                 System.out.println("Такого номера товара нет в предложенном перечне");
                 continue;
             }
-            basket.addToCart(numFood,countFood);
+            basket.addToCart(numFood, countFood);
         }
         basket.printCart(listFood);
     }
