@@ -3,12 +3,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String[] food = {"Хлеб", "Масло", "Чай", "Вода", "Колбаса"};
-        int[] basket = new int[5];
-        int[] price = {59, 150, 243, 30, 580};
-        int sumFood = 0;
+        Basket basket = new Basket(new int[]{59, 150, 243, 30, 580},
+                new String[]{"Хлеб", "Масло", "Чай", "Вода", "Колбаса"});
         System.out.println("Список товаров доступных для добавления в корзину:");
         StringBuilder listFood = new StringBuilder();
+        String[] food = basket.getFood();
+        int[] price = basket.getPrice();
         for (int i = 0; i < food.length; i++) {
             listFood.append((i + 1) + ". " + food[i] + " " + price[i] + " руб/шт \n");
         }
@@ -29,21 +29,8 @@ public class Main {
                 System.out.println("Такого номера товара нет в предложенном перечне");
                 continue;
             }
-            basket[numFood] += countFood;
-            sumFood += countFood * price[numFood];
+            basket.addToCart(numFood,countFood);
         }
-        if (sumFood == 0) {
-            System.out.println("Ваша корзина пуста");
-        } else {
-            System.out.println("Ваш заказ: \n");
-            listFood.setLength(0);
-            for (int i = 0; i < basket.length; i++) {
-                if (!(basket[i] == 0)) {
-                    listFood.append(food[i] + " " + basket[i] + " шт. * " + price[i] + " руб = " + (basket[i] * price[i]) + " руб. \n");
-                }
-            }
-            listFood.append("Итоговая сумма покупки = " + sumFood + " руб");
-            System.out.println(listFood.toString());
-        }
+        basket.printCart(listFood);
     }
 }
