@@ -20,14 +20,6 @@ public class Basket implements Serializable {
         saveBin(basketBin);
     }
 
-    public void setBaskets(int[] baskets) {
-        this.baskets = baskets;
-        sumFood = 0;
-        for (int i = 0; i < baskets.length; i++) {
-            sumFood = sumFood + (baskets[i] * price[i]);
-        }
-    }
-
     public int[] getPrice() {
         return price;
     }
@@ -65,28 +57,14 @@ public class Basket implements Serializable {
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) {
-        String[] baskArr;
-        String[] priceArr;
-        String[] foodArr;
-        try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
-            baskArr = reader.readLine().split(" ");
-            priceArr = reader.readLine().split(" ");
-            foodArr = reader.readLine().split(" ");
-        } catch (IOException ex) {
-            baskArr = new String[0];
-            priceArr = new String[0];
-            foodArr = new String[0];
+    public static Basket loadFromBinFile(File file) {
+        Basket basket = null;
+        try (FileInputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            basket = (Basket) ois.readObject();
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        int[] price = new int[foodArr.length];
-        int[] bask = new int[foodArr.length];
-        for (int i = 0; i < foodArr.length; i++) {
-            price[i] = Integer.parseInt(priceArr[i]);
-            bask[i] = Integer.parseInt(baskArr[i]);
-        }
-        Basket basket = new Basket(price, foodArr);
-        basket.setBaskets(bask);
         return basket;
     }
 }
