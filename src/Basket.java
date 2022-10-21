@@ -1,6 +1,7 @@
 import java.io.*;
 
-public class Basket {
+public class Basket implements Serializable {
+    private static final long serialVersionUID = 11L;
     private String[] food;
     private int[] price;
     private int[] baskets;
@@ -15,8 +16,8 @@ public class Basket {
     public void addToCart(int productNum, int amount) {
         baskets[productNum] += amount;
         sumFood += amount * price[productNum];
-        File basketTxt = new File("Basket.txt");
-        saveTxt(basketTxt);
+        File basketBin = new File("Basket.bin");
+        saveBin(basketBin);
     }
 
     public void setBaskets(int[] baskets) {
@@ -55,28 +56,13 @@ public class Basket {
         }
     }
 
-    public void saveTxt(File textFile) {
-        try (FileOutputStream fos = new FileOutputStream(textFile)) {
-            String stringArray = getStringToArray();
-            // перевод строки в массив байтов
-            byte[] bytes = stringArray.getBytes();
-            // запись байтов в файл
-            fos.write(bytes, 0, bytes.length);
-        } catch (IOException ex) {
+    public void saveBin(File file) {
+        try (FileOutputStream fos = new FileOutputStream(file);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this);
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-    }
-
-    public String getStringToArray() {
-        String bask = "";
-        String priceStr = "";
-        String foodStr = "";
-        for (int i = 0; i < baskets.length; i++) {
-            bask = bask + baskets[i] + ((i == baskets.length - 1) ? "" : " ");
-            priceStr = priceStr + price[i] + ((i == baskets.length - 1) ? "" : " ");
-            foodStr = foodStr + food[i] + ((i == baskets.length - 1) ? "" : " ");
-        }
-        return bask + "\n" + priceStr + "\n" + foodStr;
     }
 
     public static Basket loadFromTxtFile(File textFile) {
